@@ -38,16 +38,17 @@ export default function RollArea() {
     if (!user) {
       toast({
         title: "Login Required",
-        description: "Please login to roll for items",
+        description: "Please login to collect Blue Lock characters",
         variant: "destructive"
       });
       return;
     }
 
+    // Infinite rolls - this check is never true but keeping for safety
     if (remainingFreeRolls <= 0) {
       toast({
-        title: "No Rolls Left",
-        description: "You've used all your free rolls for today",
+        title: "System Error",
+        description: "Please try again in a moment",
         variant: "destructive"
       });
       return;
@@ -67,29 +68,29 @@ export default function RollArea() {
         {/* Dice animation area */}
         <div className="w-40 h-40 flex items-center justify-center mb-6">
           {rollingAnimation ? (
-            <i className="fas fa-dice-d20 text-8xl text-primary animate-[rolling_0.5s_ease_infinite]"></i>
+            <i className="fas fa-futbol text-8xl text-primary roll-animation"></i>
           ) : (
-            <i className="fas fa-dice-d20 text-8xl text-primary animate-pulse"></i>
+            <i className="fas fa-futbol text-8xl text-primary animate-pulse"></i>
           )}
         </div>
         
         {/* Roll button */}
         <Button
           onClick={handleRoll}
-          disabled={rollingAnimation || !user || remainingFreeRolls <= 0}
-          className="roll-btn relative overflow-hidden bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white font-montserrat font-bold text-xl px-12 py-4 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          disabled={rollingAnimation || !user}
+          className="roll-btn relative overflow-hidden summer-wave text-white font-montserrat font-bold text-xl px-12 py-4 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
         >
-          {rollingAnimation ? 'ROLLING...' : 'ROLL NOW'}
+          {rollingAnimation ? 'COLLECTING...' : 'COLLECT NOW'}
         </Button>
         
         <div className="mt-4 text-gray-400 text-sm">
           {user ? (
             <span className="font-medium">
-              You have {remainingFreeRolls} free rolls remaining today
+              Unlimited rolls! Collect as many characters as you want
             </span>
           ) : (
             <span className="font-medium">
-              Login to start rolling for items
+              Login to start collecting Blue Lock characters
             </span>
           )}
         </div>

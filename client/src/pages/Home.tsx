@@ -56,11 +56,11 @@ export default function Home() {
         {/* Main content area */}
         <div className="flex-grow space-y-6">
           {/* Welcome banner */}
-          <div className="bg-gradient-to-r from-primary to-secondary rounded-lg p-6 shadow-lg text-white">
-            <h2 className="font-montserrat font-bold text-2xl mb-2">Welcome to Online Go!</h2>
-            <p className="mb-4">Roll the dice, collect rare items, and climb the leaderboard. Can you complete the full collection?</p>
+          <div className="summer-wave rounded-lg p-6 shadow-lg text-white">
+            <h2 className="font-montserrat font-bold text-2xl mb-2">Welcome to Reflection!</h2>
+            <p className="mb-4">Collect your favorite Blue Lock characters in summer attire! Roll as much as you want and complete your collection.</p>
             <div className="flex items-center gap-2">
-              <i className="fas fa-dice-d20 text-xl"></i>
+              <i className="fas fa-futbol text-xl"></i>
               <span>Total Community Rolls: <span className="font-bold">{communityRolls.toLocaleString()}</span></span>
             </div>
           </div>

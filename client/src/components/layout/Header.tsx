@@ -32,12 +32,12 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
         <div className="flex items-center">
           <Link to="/">
-            <h1 className="font-montserrat font-bold text-2xl text-primary mr-2">
-              Online <span className="text-amber-500">Go</span>
+            <h1 className="font-montserrat font-bold text-2xl mr-2">
+              <span className="text-primary">Reflect</span><span className="text-amber-500">ion</span>
             </h1>
           </Link>
-          <span className="text-xs bg-amber-500/20 text-amber-500 px-2 py-1 rounded font-montserrat">
-            BETA
+          <span className="text-xs bg-teal-500/20 text-teal-500 px-2 py-1 rounded font-montserrat">
+            SUMMER
           </span>
         </div>
         
