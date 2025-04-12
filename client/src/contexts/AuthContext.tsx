@@ -6,6 +6,7 @@ interface User {
   isAdmin: boolean;
   rollCount: number;
   inventory: string[];
+  coins: number;
 }
 
 interface AuthContextType {
@@ -21,7 +22,8 @@ const defaultUser: User = {
   username: '',
   isAdmin: false,
   rollCount: 0,
-  inventory: []
+  inventory: [],
+  coins: 0
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -50,11 +52,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (username: string, password: string): boolean => {
     // Check if this is the admin account
     if (username === 'AdminWest' && password === 'password') {
-      const adminUser = {
+      const adminUser: User = {
         username: 'AdminWest',
         isAdmin: true,
         rollCount: 0,
-        inventory: []
+        inventory: [],
+        coins: 10000 // Admin gets lots of coins
       };
       setUser(adminUser);
       saveUserData(adminUser);
@@ -68,11 +71,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
 
     if (foundUser) {
-      const userData = {
+      const userData: User = {
         username: foundUser.username,
         isAdmin: false,
         rollCount: foundUser.rollCount || 0,
-        inventory: foundUser.inventory || []
+        inventory: foundUser.inventory || [],
+        coins: foundUser.coins || 0
       };
       setUser(userData);
       saveUserData(userData);
@@ -97,7 +101,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email,
       password,
       rollCount: 0,
-      inventory: []
+      inventory: [],
+      coins: 10 // New users get 10 coins to start with
     };
 
     // Save to local storage
@@ -105,11 +110,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem('reflectionUsers', JSON.stringify(users));
 
     // Log the user in
-    const userData = {
+    const userData: User = {
       username,
       isAdmin: false,
       rollCount: 0,
-      inventory: []
+      inventory: [],
+      coins: 10
     };
     setUser(userData);
     saveUserData(userData);
@@ -133,7 +139,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const users = JSON.parse(localStorage.getItem('reflectionUsers') || localStorage.getItem('onlineGoUsers') || '[]');
       const updatedUsers = users.map((u: any) => {
         if (u.username === user.username) {
-          return { ...u, rollCount: updatedUser.rollCount, inventory: updatedUser.inventory };
+          return { 
+            ...u, 
+            rollCount: updatedUser.rollCount, 
+            inventory: updatedUser.inventory,
+            coins: updatedUser.coins 
+          };
         }
         return u;
       });

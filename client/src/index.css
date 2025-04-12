@@ -104,6 +104,45 @@
   animation: roll 0.2s infinite;
 }
 
+/* Lucky animation */
+.lucky-animation {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.lucky-animation i:first-child {
+  animation: spin 1.5s infinite linear;
+}
+
+.lucky-animation i:last-child {
+  position: absolute;
+  animation: pulse 1s infinite alternate ease-in-out;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
 /* Summer special effects */
 .summer-wave {
   background: linear-gradient(-45deg, #0891b2, #06b6d4, #22d3ee, #67e8f9);

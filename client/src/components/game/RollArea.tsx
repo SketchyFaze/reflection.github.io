@@ -6,16 +6,19 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import ItemCard from './ItemCard';
 import { useToast } from '@/hooks/use-toast';
 import { addRecentRoll } from '@/utils/localStorage';
+import { Badge } from '@/components/ui/badge';
 
 export default function RollArea() {
   const { user } = useAuth();
   const { 
     rollItem, 
     rollingAnimation, 
-    lastRolledItem, 
-    remainingFreeRolls 
+    lastRolledItem,
+    coins,
+    settings
   } = useGame();
   const [showResultDialog, setShowResultDialog] = useState(false);
+  const [luckySpinMode, setLuckySpinMode] = useState(false);
   const { toast } = useToast();
 
   // Handle showing result dialog when lastRolledItem changes
@@ -34,7 +37,7 @@ export default function RollArea() {
     }
   }, [lastRolledItem, rollingAnimation, user]);
 
-  const handleRoll = () => {
+  const handleNormalRoll = () => {
     if (!user) {
       toast({
         title: "Login Required",
@@ -44,49 +47,117 @@ export default function RollArea() {
       return;
     }
 
-    // Infinite rolls - this check is never true but keeping for safety
-    if (remainingFreeRolls <= 0) {
+    rollItem(false);
+  };
+  
+  const handleLuckyRoll = () => {
+    if (!user) {
       toast({
-        title: "System Error",
-        description: "Please try again in a moment",
+        title: "Login Required",
+        description: "Please login to collect Blue Lock characters",
         variant: "destructive"
       });
       return;
     }
-
-    rollItem();
+    
+    // Check if user has enough coins
+    if (coins < 200) {
+      toast({
+        title: "Not Enough Coins",
+        description: "Lucky Spins require 200 coins. Continue rolling normally to earn more coins!",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Execute a lucky roll
+    rollItem(true);
   };
 
   return (
-    <div className="bg-darkbg rounded-lg p-6 border border-mediumbg shadow-lg">
-      <div className="text-center mb-8">
+    <div className="bg-darkbg rounded-lg p-6 border border-mediumbg shadow-lg relative">
+      {/* Global boost notification */}
+      {settings.globalBoostActive && (
+        <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-500 to-teal-400 text-white p-2 text-center font-medium rounded-t-lg">
+          {settings.globalBoostMessage || "Global boost active!"}
+        </div>
+      )}
+    
+      <div className={`text-center ${settings.globalBoostActive ? 'mt-8' : ''} mb-8`}>
         <h2 className="font-montserrat font-bold text-2xl mb-2 text-white">Roll & Collect</h2>
         <p className="text-gray-400">Test your luck and expand your collection!</p>
+        
+        {/* Coin display */}
+        <div className="mt-2 flex justify-center items-center">
+          <div className="bg-yellow-600/30 text-yellow-300 px-3 py-1 rounded-full flex items-center space-x-1">
+            <span className="text-yellow-400">💰</span>
+            <span className="font-medium">{coins} coins</span>
+          </div>
+        </div>
+      </div>
+      
+      {/* Roll type selector */}
+      <div className="flex justify-center space-x-4 mb-4">
+        <Button 
+          variant={luckySpinMode ? "outline" : "default"}
+          onClick={() => setLuckySpinMode(false)}
+          className={`${!luckySpinMode ? 'bg-primary hover:bg-primary/90' : ''}`}
+        >
+          Normal Roll
+          <Badge variant="secondary" className="ml-2 bg-blue-400/20 text-blue-200">+2 coins</Badge>
+        </Button>
+        <Button 
+          variant={luckySpinMode ? "default" : "outline"}
+          onClick={() => setLuckySpinMode(true)}
+          className={`${luckySpinMode ? 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600' : ''}`}
+        >
+          Lucky Spin
+          <Badge variant="secondary" className="ml-2 bg-yellow-400/20 text-yellow-200">200 coins</Badge>
+        </Button>
       </div>
       
       <div className="flex flex-col items-center">
-        {/* Dice animation area */}
+        {/* Animation area */}
         <div className="w-40 h-40 flex items-center justify-center mb-6">
           {rollingAnimation ? (
-            <i className="fas fa-futbol text-8xl text-primary roll-animation"></i>
+            luckySpinMode ? (
+              <div className="lucky-animation">
+                <i className="fas fa-star text-7xl text-yellow-400 animate-spin"></i>
+                <i className="fas fa-futbol text-6xl text-primary roll-animation absolute"></i>
+              </div>
+            ) : (
+              <i className="fas fa-futbol text-8xl text-primary roll-animation"></i>
+            )
           ) : (
-            <i className="fas fa-futbol text-8xl text-primary animate-pulse"></i>
+            <i className={`fas fa-${luckySpinMode ? 'star text-yellow-400' : 'futbol text-primary'} text-8xl animate-pulse`}></i>
           )}
         </div>
         
         {/* Roll button */}
         <Button
-          onClick={handleRoll}
+          onClick={luckySpinMode ? handleLuckyRoll : handleNormalRoll}
           disabled={rollingAnimation || !user}
-          className="roll-btn relative overflow-hidden summer-wave text-white font-montserrat font-bold text-xl px-12 py-4 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          className={`roll-btn relative overflow-hidden ${
+            luckySpinMode 
+              ? 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600' 
+              : 'summer-wave'
+          } text-white font-montserrat font-bold text-xl px-12 py-4 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary`}
         >
-          {rollingAnimation ? 'COLLECTING...' : 'COLLECT NOW'}
+          {rollingAnimation 
+            ? 'COLLECTING...' 
+            : luckySpinMode 
+              ? 'LUCKY SPIN!' 
+              : 'COLLECT NOW'
+          }
         </Button>
         
         <div className="mt-4 text-gray-400 text-sm">
           {user ? (
             <span className="font-medium">
-              Unlimited rolls! Collect as many characters as you want
+              {luckySpinMode 
+                ? "Lucky Spins guarantee Epic or better characters! (200 coins)" 
+                : "Collect characters and earn 2 coins per roll"
+              }
             </span>
           ) : (
             <span className="font-medium">
