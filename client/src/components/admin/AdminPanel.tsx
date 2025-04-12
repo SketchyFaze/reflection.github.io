@@ -47,6 +47,19 @@ export default function AdminPanel() {
     setGlobalBoostMessage(settings.globalBoostMessage || '');
     setGlobalBoostExpiry(settings.globalBoostExpiry || 0);
   }, [settings]);
+  
+  // Listen for the custom event to open the admin panel
+  useEffect(() => {
+    const handleOpenAdminPanel = () => {
+      setIsOpen(true);
+    };
+    
+    document.addEventListener('openAdminPanel', handleOpenAdminPanel);
+    
+    return () => {
+      document.removeEventListener('openAdminPanel', handleOpenAdminPanel);
+    };
+  }, []);
 
   // Give coins to a specific user
   const handleGiveCoins = () => {
