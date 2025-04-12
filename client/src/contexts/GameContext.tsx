@@ -4,20 +4,33 @@ import { useAuth } from '@/contexts/AuthContext';
 import { loadGameSettings, saveGameSettings } from '@/utils/localStorage';
 
 interface GameContextType {
-  rollItem: () => GameItem | null;
+  rollItem: (isLucky?: boolean) => GameItem | null;
   rollingAnimation: boolean;
   lastRolledItem: GameItem | null;
   allItems: GameItem[];
   leaderboard: LeaderboardEntry[];
   communityRolls: number;
-  dailyFreeRolls: number;
-  remainingFreeRolls: number;
-  resetFreeDailyRolls: () => void;
   updateLeaderboard: () => void;
   settings: GameSettings;
   updateSettings: (newSettings: Partial<GameSettings>) => void;
   featuredItem: GameItem;
   dailyResetTime: Date;
+  
+  // Coin system
+  coins: number;
+  addCoins: (amount: number) => void;
+  spendCoins: (amount: number) => boolean;
+  
+  // Character equipping
+  equipCharacter: (itemId: string) => void;
+  unequipCharacter: (itemId: string) => void;
+  equippedCharacters: string[];
+  
+  // Marketplace
+  listItemForSale: (itemId: string, price: number) => void;
+  unlistItemFromSale: (itemId: string) => void;
+  buyItem: (itemId: string, sellerId: string, price: number) => boolean;
+  listedItems: Array<{itemId: string, sellerId: string, price: number}>;
 }
 
 interface LeaderboardEntry {
@@ -47,14 +60,27 @@ const GameContext = createContext<GameContextType>({
   allItems: [],
   leaderboard: [],
   communityRolls: 0,
-  dailyFreeRolls: 3,
-  remainingFreeRolls: 3,
-  resetFreeDailyRolls: () => {},
   updateLeaderboard: () => {},
   settings: defaultSettings,
   updateSettings: () => {},
   featuredItem: gameItems[0],
-  dailyResetTime: new Date()
+  dailyResetTime: new Date(),
+  
+  // Coin system
+  coins: 0,
+  addCoins: () => {},
+  spendCoins: () => false,
+  
+  // Character equipping
+  equipCharacter: () => {},
+  unequipCharacter: () => {},
+  equippedCharacters: [],
+  
+  // Marketplace
+  listItemForSale: () => {},
+  unlistItemFromSale: () => {},
+  buyItem: () => false,
+  listedItems: []
 });
 
 export const useGame = () => useContext(GameContext);

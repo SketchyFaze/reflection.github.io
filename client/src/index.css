@@ -51,6 +51,10 @@
   @apply bg-amber-400;
 }
 
+.rarity-worldclass {
+  @apply bg-rose-400;
+}
+
 /* Shiny border animation for legendary items */
 .shiny-border {
   position: relative;

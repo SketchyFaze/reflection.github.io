@@ -5,7 +5,8 @@ export enum Rarity {
   Uncommon = 'Uncommon',
   Rare = 'Rare',
   Epic = 'Epic',
-  Legendary = 'Legendary'
+  Legendary = 'Legendary',
+  WorldClass = 'World-Class'
 }
 
 export interface GameItem {
@@ -13,10 +14,14 @@ export interface GameItem {
   name: string;
   icon: string;
   rarity: Rarity;
-  rarityLevel: number; // 1 = Common, 5 = Legendary
-  indexInRarity: number; // Item X/Y format
+  rarityLevel: number; // 1 = Common, 6 = World-Class
+  indexInRarity: number;
   totalInRarity: number;
   description?: string;
+  imageUrl?: string; // URL to character image
+  equipped?: boolean; // Whether this character is currently equipped by the user
+  price?: number; // Price in coins for marketplace
+  listedForSale?: boolean; // Whether this item is listed on the marketplace
 }
 
 // Map rarity levels to CSS classes and indices - summer theme colors
@@ -65,6 +70,15 @@ export const rarityConfig = {
     textColor: 'text-amber-400',
     level: 5,
     count: 2
+  },
+  [Rarity.WorldClass]: {
+    className: 'rarity-worldclass', 
+    gradient: 'from-rose-400 to-pink-600',
+    color: 'text-rose-400',
+    bgColor: 'bg-rose-400/20',
+    textColor: 'text-rose-400',
+    level: 6,
+    count: 1
   }
 };
 
@@ -79,7 +93,8 @@ export const gameItems: GameItem[] = [
     rarityLevel: rarityConfig[Rarity.Common].level,
     indexInRarity: 1,
     totalInRarity: rarityConfig[Rarity.Common].count,
-    description: 'Isagi enjoying his day at the beach, focused on improving his spatial awareness.'
+    description: 'Isagi enjoying his day at the beach, focused on improving his spatial awareness.',
+    imageUrl: 'https://i.imgur.com/XoiNm8G.jpg'
   },
   {
     id: 'meguru-bachira',
@@ -360,24 +375,39 @@ export const gameItems: GameItem[] = [
   
   // Legendary Items (2)
   {
-    id: 'seishiro-nagi-masterclass',
-    name: 'Seishiro Nagi (Masterclass)',
-    icon: 'fa-hat-wizard',
-    rarity: Rarity.Legendary,
-    rarityLevel: rarityConfig[Rarity.Legendary].level,
-    indexInRarity: 1,
-    totalInRarity: rarityConfig[Rarity.Legendary].count,
-    description: 'The ultimate form of Nagi, displaying his genius-level trapping and scoring abilities on the beach.'
-  },
-  {
     id: 'itoshi-sae',
     name: 'Itoshi Sae',
     icon: 'fa-crown',
     rarity: Rarity.Legendary,
     rarityLevel: rarityConfig[Rarity.Legendary].level,
+    indexInRarity: 1,
+    totalInRarity: rarityConfig[Rarity.Legendary].count,
+    description: 'The world-class playmaker casually demonstrating godlike beach soccer skills.',
+    imageUrl: 'https://i.imgur.com/0jOioqF.jpg'
+  },
+  {
+    id: 'kaiser',
+    name: 'Michael Kaiser',
+    icon: 'fa-meteor',
+    rarity: Rarity.Legendary,
+    rarityLevel: rarityConfig[Rarity.Legendary].level,
     indexInRarity: 2,
     totalInRarity: rarityConfig[Rarity.Legendary].count,
-    description: 'The world-class playmaker casually demonstrating godlike beach soccer skills.'
+    description: 'The dominant striker enjoying a beach BBQ with his intimidating presence.',
+    imageUrl: 'https://i.imgur.com/YT50Cnm.jpg'
+  },
+  
+  // World-Class Item (1)
+  {
+    id: 'seishiro-nagi-masterclass',
+    name: 'Seishiro Nagi (Masterclass)',
+    icon: 'fa-hat-wizard',
+    rarity: Rarity.WorldClass,
+    rarityLevel: rarityConfig[Rarity.WorldClass].level,
+    indexInRarity: 1,
+    totalInRarity: rarityConfig[Rarity.WorldClass].count,
+    description: 'The ultimate form of Nagi, displaying his genius-level trapping and scoring abilities on the beach.',
+    imageUrl: 'https://i.imgur.com/Dcu6yyo.jpg'
   }
 ];
 
