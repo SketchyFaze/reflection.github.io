@@ -73,7 +73,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   // Load initial game state
   useEffect(() => {
     // Load community rolls
-    const savedCommunityRolls = parseInt(localStorage.getItem('onlineGoCommunityRolls') || '0');
+    const savedCommunityRolls = parseInt(localStorage.getItem('reflectionCommunityRolls') || '0');
     setCommunityRolls(savedCommunityRolls);
 
     // Load game settings (admin controlled)
@@ -82,18 +82,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setSettings(savedSettings);
     }
 
-    // Calculate remaining free rolls
-    const lastResetDate = localStorage.getItem('onlineGoLastResetDate');
-    const today = new Date().toDateString();
-    
-    if (lastResetDate !== today) {
-      localStorage.setItem('onlineGoLastResetDate', today);
-      setRemainingFreeRolls(settings.dailyFreeRolls);
-      localStorage.setItem('onlineGoRemainingFreeRolls', settings.dailyFreeRolls.toString());
-    } else {
-      const savedRemainingRolls = parseInt(localStorage.getItem('onlineGoRemainingFreeRolls') || '3');
-      setRemainingFreeRolls(savedRemainingRolls);
-    }
+    // Infinite free rolls - always set to maximum
+    setRemainingFreeRolls(9999);
+    localStorage.setItem('reflectionRemainingFreeRolls', '9999');
 
     // Set next daily reset time
     const tomorrow = new Date();
@@ -206,14 +197,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         // Update community roll count
         const newCommunityRolls = communityRolls + 1;
         setCommunityRolls(newCommunityRolls);
-        localStorage.setItem('onlineGoCommunityRolls', newCommunityRolls.toString());
+        localStorage.setItem('reflectionCommunityRolls', newCommunityRolls.toString());
         
-        // Update remaining free rolls
-        if (remainingFreeRolls > 0) {
-          const newRemainingRolls = remainingFreeRolls - 1;
-          setRemainingFreeRolls(newRemainingRolls);
-          localStorage.setItem('onlineGoRemainingFreeRolls', newRemainingRolls.toString());
-        }
+        // No need to update remaining free rolls - infinite rolls!
 
         // Store result and end animation
         setLastRolledItem(selectedItem);
@@ -233,14 +219,14 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetFreeDailyRolls = () => {
-    setRemainingFreeRolls(settings.dailyFreeRolls);
-    localStorage.setItem('onlineGoRemainingFreeRolls', settings.dailyFreeRolls.toString());
-    localStorage.setItem('onlineGoLastResetDate', new Date().toDateString());
+    // Always keep at 9999 for infinite rolls
+    setRemainingFreeRolls(9999);
+    localStorage.setItem('reflectionRemainingFreeRolls', '9999');
   };
 
   const updateLeaderboard = () => {
     // Get users from storage
-    const users = JSON.parse(localStorage.getItem('onlineGoUsers') || '[]');
+    const users = JSON.parse(localStorage.getItem('reflectionUsers') || '[]');
     
     // Create leaderboard data
     const leaderboardData: LeaderboardEntry[] = users.map((user: any) => {
@@ -276,12 +262,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setSettings(updatedSettings);
     saveGameSettings(updatedSettings);
     
-    // Reset free rolls if the daily free roll count changed
-    if (newSettings.dailyFreeRolls !== undefined && 
-        newSettings.dailyFreeRolls !== settings.dailyFreeRolls) {
-      setRemainingFreeRolls(newSettings.dailyFreeRolls);
-      localStorage.setItem('onlineGoRemainingFreeRolls', newSettings.dailyFreeRolls.toString());
-    }
+    // Always keep free rolls at maximum
+    setRemainingFreeRolls(9999);
+    localStorage.setItem('reflectionRemainingFreeRolls', '9999');
   };
 
   return (
