@@ -141,7 +141,8 @@ export default function AdminPanel() {
     <>
       <div
         id="admin-panel-modal"
-        className="modal fixed inset-0 bg-black/70 flex items-center justify-center z-50 hidden"
+        className="modal fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+        style={{ display: isOpen ? 'flex' : 'none' }}
       >
         <div className="bg-darkbg rounded-lg shadow-xl max-w-4xl w-full mx-4 overflow-hidden">
           <div className="bg-gradient-to-r from-amber-500 to-secondary py-4 px-6 flex justify-between items-center">
@@ -149,9 +150,7 @@ export default function AdminPanel() {
             <button 
               id="close-admin-panel"
               className="text-white hover:text-gray-300"
-              onClick={() => {
-                document.getElementById('admin-panel-modal')?.classList.add('hidden');
-              }}
+              onClick={() => setIsOpen(false)}
             >
               <i className="fas fa-times"></i>
             </button>

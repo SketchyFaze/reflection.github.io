@@ -42,11 +42,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = user !== null;
 
   useEffect(() => {
-    // Load user data from localStorage on initial load
-    const savedUser = loadUserData();
-    if (savedUser) {
-      setUser(savedUser);
-    }
+    // Auto-logout when page is refreshed or accessed
+    clearUserData();
+    setUser(null);
   }, []);
 
   const login = (username: string, password: string): boolean => {

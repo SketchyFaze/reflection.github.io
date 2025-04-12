@@ -41,7 +41,9 @@ export default function UserMenu() {
               onClick={(e) => {
                 e.preventDefault();
                 closeMenu();
-                document.getElementById('admin-panel-modal')?.classList.remove('hidden');
+                // Find the AdminPanel component and set isOpen to true
+                const event = new CustomEvent('openAdminPanel');
+                document.dispatchEvent(event);
               }}
               className="w-full text-left block px-4 py-2 text-sm hover:bg-mediumbg"
             >

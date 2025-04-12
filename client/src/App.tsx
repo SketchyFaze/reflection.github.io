@@ -11,6 +11,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { GameProvider } from "@/contexts/GameContext";
 import Header from "@/components/layout/Header";
 import MobileNav from "@/components/layout/MobileNav";
+import AdminPanel from "@/components/admin/AdminPanel";
 
 function Router() {
   return (
@@ -35,6 +36,7 @@ function App() {
               <Router />
             </div>
             <MobileNav />
+            <AdminPanel />
             <Toaster />
           </div>
         </GameProvider>
