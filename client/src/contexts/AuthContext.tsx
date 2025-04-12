@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // Regular user login logic
-    const users = JSON.parse(localStorage.getItem('onlineGoUsers') || '[]');
+    const users = JSON.parse(localStorage.getItem('reflectionUsers') || localStorage.getItem('onlineGoUsers') || '[]');
     const foundUser = users.find((u: any) => 
       u.username === username && u.password === password
     );
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const register = (username: string, email: string, password: string): boolean => {
     // Check if username already exists
-    const users = JSON.parse(localStorage.getItem('onlineGoUsers') || '[]');
+    const users = JSON.parse(localStorage.getItem('reflectionUsers') || localStorage.getItem('onlineGoUsers') || '[]');
     const usernameExists = users.some((u: any) => u.username === username);
     
     if (usernameExists) {
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // Save to local storage
     users.push(newUser);
-    localStorage.setItem('onlineGoUsers', JSON.stringify(users));
+    localStorage.setItem('reflectionUsers', JSON.stringify(users));
 
     // Log the user in
     const userData = {
@@ -130,14 +130,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     // If it's not admin, also update in the users list
     if (!user.isAdmin) {
-      const users = JSON.parse(localStorage.getItem('onlineGoUsers') || '[]');
+      const users = JSON.parse(localStorage.getItem('reflectionUsers') || localStorage.getItem('onlineGoUsers') || '[]');
       const updatedUsers = users.map((u: any) => {
         if (u.username === user.username) {
           return { ...u, rollCount: updatedUser.rollCount, inventory: updatedUser.inventory };
         }
         return u;
       });
-      localStorage.setItem('onlineGoUsers', JSON.stringify(updatedUsers));
+      localStorage.setItem('reflectionUsers', JSON.stringify(updatedUsers));
     }
   };
 

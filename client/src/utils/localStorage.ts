@@ -2,35 +2,37 @@
 
 // User data
 export const saveUserData = (userData: any) => {
-  localStorage.setItem('onlineGoCurrentUser', JSON.stringify(userData));
+  localStorage.setItem('reflectionCurrentUser', JSON.stringify(userData));
 };
 
 export const loadUserData = () => {
-  const data = localStorage.getItem('onlineGoCurrentUser');
+  const data = localStorage.getItem('reflectionCurrentUser') || localStorage.getItem('onlineGoCurrentUser');
   return data ? JSON.parse(data) : null;
 };
 
 export const clearUserData = () => {
+  localStorage.removeItem('reflectionCurrentUser');
+  // Also clear old keys for compatibility
   localStorage.removeItem('onlineGoCurrentUser');
 };
 
 // Game settings (admin controlled)
 export const saveGameSettings = (settings: any) => {
-  localStorage.setItem('onlineGoGameSettings', JSON.stringify(settings));
+  localStorage.setItem('reflectionGameSettings', JSON.stringify(settings));
 };
 
 export const loadGameSettings = () => {
-  const data = localStorage.getItem('onlineGoGameSettings');
+  const data = localStorage.getItem('reflectionGameSettings') || localStorage.getItem('onlineGoGameSettings');
   return data ? JSON.parse(data) : null;
 };
 
 // Community data
 export const saveCommunityRolls = (count: number) => {
-  localStorage.setItem('onlineGoCommunityRolls', count.toString());
+  localStorage.setItem('reflectionCommunityRolls', count.toString());
 };
 
 export const loadCommunityRolls = (): number => {
-  return parseInt(localStorage.getItem('onlineGoCommunityRolls') || '0');
+  return parseInt(localStorage.getItem('reflectionCommunityRolls') || localStorage.getItem('onlineGoCommunityRolls') || '0');
 };
 
 // Recent rolls for community feed
@@ -46,11 +48,11 @@ export const addRecentRoll = (roll: RecentRoll) => {
   
   // Keep only 5 most recent rolls
   const updatedRolls = recentRolls.slice(0, 5);
-  localStorage.setItem('onlineGoRecentRolls', JSON.stringify(updatedRolls));
+  localStorage.setItem('reflectionRecentRolls', JSON.stringify(updatedRolls));
 };
 
 export const loadRecentRolls = (): RecentRoll[] => {
-  const data = localStorage.getItem('onlineGoRecentRolls');
+  const data = localStorage.getItem('reflectionRecentRolls') || localStorage.getItem('onlineGoRecentRolls');
   return data ? JSON.parse(data) : [];
 };
 
