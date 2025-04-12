@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGame } from '@/contexts/GameContext';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
 import ItemCard from './ItemCard';
 import { useToast } from '@/hooks/use-toast';
 import { addRecentRoll } from '@/utils/localStorage';
@@ -37,20 +38,8 @@ export default function RollArea() {
     }
   }, [lastRolledItem, rollingAnimation, user]);
 
-  const handleNormalRoll = () => {
-    if (!user) {
-      toast({
-        title: "Login Required",
-        description: "Please login to collect Blue Lock characters",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    rollItem(false);
-  };
-  
-  const handleLuckyRoll = () => {
+  // Combined handler for both normal and lucky rolls
+  const handleRoll = () => {
     if (!user) {
       toast({
         title: "Login Required",
@@ -60,18 +49,24 @@ export default function RollArea() {
       return;
     }
     
-    // Check if user has enough coins
-    if (coins < 200) {
-      toast({
-        title: "Not Enough Coins",
-        description: "Lucky Spins require 200 coins. Continue rolling normally to earn more coins!",
-        variant: "destructive"
-      });
-      return;
+    // If lucky spin is selected, check for coins
+    if (luckySpinMode) {
+      // Check if user has enough coins
+      if (coins < 200) {
+        toast({
+          title: "Not Enough Coins",
+          description: "Lucky Spins require 200 coins. Switch to normal roll or earn more coins!",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      // Execute a lucky roll
+      rollItem(true);
+    } else {
+      // Normal roll
+      rollItem(false);
     }
-    
-    // Execute a lucky roll
-    rollItem(true);
   };
 
   return (
@@ -96,24 +91,17 @@ export default function RollArea() {
         </div>
       </div>
       
-      {/* Roll type selector */}
-      <div className="flex justify-center space-x-4 mb-4">
-        <Button 
-          variant={luckySpinMode ? "outline" : "default"}
-          onClick={() => setLuckySpinMode(false)}
-          className={`${!luckySpinMode ? 'bg-primary hover:bg-primary/90' : ''}`}
-        >
-          Normal Roll
-          <Badge variant="secondary" className="ml-2 bg-blue-400/20 text-blue-200">+2 coins</Badge>
-        </Button>
-        <Button 
-          variant={luckySpinMode ? "default" : "outline"}
-          onClick={() => setLuckySpinMode(true)}
-          className={`${luckySpinMode ? 'bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-600 hover:to-rose-600' : ''}`}
-        >
-          Lucky Spin
-          <Badge variant="secondary" className="ml-2 bg-yellow-400/20 text-yellow-200">200 coins</Badge>
-        </Button>
+      {/* Roll Type Toggle */}
+      <div className="flex justify-center items-center mb-4 gap-3">
+        <span className="text-gray-300 text-sm">Normal Roll</span>
+        <Switch 
+          checked={luckySpinMode}
+          onCheckedChange={setLuckySpinMode}
+          className="data-[state=checked]:bg-amber-500"
+        />
+        <Badge variant="outline" className="px-3 py-2 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-yellow-300 border-yellow-400/30 font-medium text-sm">
+          <i className="fas fa-coins mr-2 text-yellow-400"></i>Lucky Spin: 200 coins
+        </Badge>
       </div>
       
       <div className="flex flex-col items-center">
@@ -135,7 +123,7 @@ export default function RollArea() {
         
         {/* Roll button */}
         <Button
-          onClick={luckySpinMode ? handleLuckyRoll : handleNormalRoll}
+          onClick={handleRoll}
           disabled={rollingAnimation || !user}
           className={`roll-btn relative overflow-hidden ${
             luckySpinMode 
@@ -170,8 +158,13 @@ export default function RollArea() {
       {/* Result Dialog */}
       <Dialog open={showResultDialog} onOpenChange={setShowResultDialog}>
         <DialogContent className="bg-darkbg border border-mediumbg text-white">
+          <DialogTitle className="text-xl font-montserrat font-medium text-center">
+            New Character Collected!
+          </DialogTitle>
+          <DialogDescription className="text-center text-gray-400">
+            You've successfully added a new character to your collection.
+          </DialogDescription>
           <div className="text-center">
-            <div className="text-xl font-montserrat font-medium mb-4">You rolled:</div>
             {lastRolledItem && (
               <div className="flex justify-center">
                 <ItemCard item={lastRolledItem} size="large" highlight={true} />
